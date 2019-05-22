@@ -12,3 +12,5 @@ torch.Tensor.GPU---.cpu---.data---.numpy
                 with open(self.save_resout_feature_path, 'wb') as f:
                     print('writing to', self.save_resout_feature_path)
                     pickle.dump(feature_np, f)
+
+# data generation can be seen in code

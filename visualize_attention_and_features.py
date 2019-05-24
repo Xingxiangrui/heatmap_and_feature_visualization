@@ -81,14 +81,15 @@ class visualize_attention():
     def __init__(self):
         # super(self).__init__()
         # loaded features are numpy format,names is list
-        self.pkl_file_dir='/Users/baidu/Desktop/code/chun_ML_GCN/cls_gat_map/'
+        # self.pkl_file_dir='/Users/baidu/Desktop/code/chun_ML_GCN/attention_analyse/'
+        self.pkl_file_dir = '/Users/baidu/Desktop/code/chun_ML_GCN/attention_analyse/cls_gat_with_supple_loss/'
         self.attention_path=self.pkl_file_dir+'batch_attentions.pkl'
         self.names_files=self.pkl_file_dir+'coco_names.pkl'
         self.resout_feature_path = self.pkl_file_dir + 'resnet_out_feature.pkl'
         self.feature_in_GATLayer_path = self.pkl_file_dir + 'feature_in_BGALayer.pkl'
         self.GAlayer_out_feature_path = self.pkl_file_dir + 'GALayer_output_feature.pkl'
-        self.save_correlation_heatmap=False
-        self.save_PCA_features=True
+        self.save_correlation_heatmap=True
+        self.save_PCA_features=False
 
     def run_visualize(self):
         # loading batch attention value and feature value
@@ -120,7 +121,7 @@ class visualize_attention():
                 pd.DataFrame(mat * (mat >= 0), columns=names,
                              index=names),
                 xticklabels=True,
-                yticklabels=True, cmap="YlGnBu")
+                yticklabels=True,cmap="YlGnBu") # cmap="YlGnBu"  'RdYlBu'
             # sns.heatmap(np.round(a,2), annot=True, vmax=1,vmin = 0, xticklabels= True, yticklabels= True,
             #            square=True, cmap="YlGnBu")
             ax.set_title('Correlation', fontsize=18)
@@ -133,7 +134,7 @@ class visualize_attention():
         if(self.save_correlation_heatmap == True):
             for map_idx in range(attention_value.shape[0]):
                 attention_map=attention_value[map_idx,:,:]
-                map_name='attention_map_'+str(map_idx)+'.jpg'
+                map_name=self.pkl_file_dir+'attention_map_'+str(map_idx)+'.jpg'
                 # misc.toimage(attention_map).save(map_name)
                 plot_cor(mat=attention_map, names=names, save_fig_name=map_name)
 
@@ -151,22 +152,26 @@ class visualize_attention():
             dim1 = X[:, 1]
             # draw PCA results and save
             plt.scatter(dim0, dim1)
+            return pca.explained_variance_ratio_
 
         def each_img_pca(img_idx,file_name):
-            each_category_pca_features(img_idx=img_idx,feature_value=self.resnet_out_feature)
-            each_category_pca_features(img_idx=img_idx, feature_value=self.inGALayer_feature)
-            each_category_pca_features(img_idx=img_idx, feature_value=self.GAlyaer_out_feature)
-            plt.legend(['resnet_out_feature', 'GALayer_input_feature', 'GALayer_output_feature'])
+            res_var_ratio=each_category_pca_features(img_idx=img_idx,feature_value=self.resnet_out_feature)
+            ga_in_var_ratio=each_category_pca_features(img_idx=img_idx, feature_value=self.inGALayer_feature)
+            ga_out_var_ratio=each_category_pca_features(img_idx=img_idx, feature_value=self.GAlyaer_out_feature)
+
+            plt.legend(['resnet_out_feature| explain_var_ratio='+str(res_var_ratio),
+                        'GALayer_input_feature| '+str(ga_in_var_ratio),
+                        'GALayer_output_feature| '+str(ga_out_var_ratio)])
             plt.savefig(file_name)
             plt.close('all')
 
         if(self.save_PCA_features== True) :
-            each_img_pca(img_idx=1,file_name='img_1_class_feature_pca.jpg')
-            each_img_pca(img_idx=2, file_name='img_2_class_feature_pca.jpg')
-            each_img_pca(img_idx=3, file_name='img_3_class_feature_pca.jpg')
-            each_img_pca(img_idx=4, file_name='img_4_class_feature_pca.jpg')
-            each_img_pca(img_idx=5, file_name='img_5_class_feature_pca.jpg')
-            each_img_pca(img_idx=6, file_name='img_6_class_feature_pca.jpg')
+            each_img_pca(img_idx=1,file_name=self.pkl_file_dir+'img_1_class_feature_pca.jpg')
+            each_img_pca(img_idx=2, file_name=self.pkl_file_dir+'img_2_class_feature_pca.jpg')
+            each_img_pca(img_idx=3, file_name=self.pkl_file_dir+'img_3_class_feature_pca.jpg')
+            each_img_pca(img_idx=4, file_name=self.pkl_file_dir+'img_4_class_feature_pca.jpg')
+            each_img_pca(img_idx=5, file_name=self.pkl_file_dir+'img_5_class_feature_pca.jpg')
+            each_img_pca(img_idx=6, file_name=self.pkl_file_dir+'img_6_class_feature_pca.jpg')
 
         print('program end...')
 

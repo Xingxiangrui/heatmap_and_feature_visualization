@@ -82,13 +82,14 @@ class visualize_attention():
         # super(self).__init__()
         # loaded features are numpy format,names is list
         # self.pkl_file_dir='/Users/baidu/Desktop/code/chun_ML_GCN/attention_analyse/'
-        self.pkl_file_dir = '/Users/baidu/Desktop/code/chun_ML_GCN/attention_analyse/cls_gat_with_supple_loss/'
+        self.pkl_file_dir = '/Users/baidu/Desktop/code/chun_ML_GCN/attention_analyse/weight_decay_cls_gat/'
         self.attention_path=self.pkl_file_dir+'batch_attentions.pkl'
         self.names_files=self.pkl_file_dir+'coco_names.pkl'
         self.resout_feature_path = self.pkl_file_dir + 'resnet_out_feature.pkl'
         self.feature_in_GATLayer_path = self.pkl_file_dir + 'feature_in_BGALayer.pkl'
         self.GAlayer_out_feature_path = self.pkl_file_dir + 'GALayer_output_feature.pkl'
-        self.save_correlation_heatmap=True
+        self.print_attention_correlation_labels=True
+        self.save_correlation_heatmap=False
         self.save_PCA_features=False
 
     def run_visualize(self):
@@ -110,7 +111,7 @@ class visualize_attention():
             GAlyaer_out_feature = pickle.load(f)      # batch_size*80*256
         # feature
         self.resnet_out_feature,self.inGALayer_feature,self.GAlyaer_out_feature=resnet_out_feature,inGALayer_feature,GAlyaer_out_feature
-
+        self.names=names
 
         # plot heatmap of matrix
         def plot_cor(mat, names,save_fig_name):
@@ -130,13 +131,39 @@ class visualize_attention():
             plt.savefig(save_fig_name)
             plt.close('all')
 
-        # print attention map
+        # print attention heatmap and save
         if(self.save_correlation_heatmap == True):
             for map_idx in range(attention_value.shape[0]):
                 attention_map=attention_value[map_idx,:,:]
                 map_name=self.pkl_file_dir+'attention_map_'+str(map_idx)+'.jpg'
                 # misc.toimage(attention_map).save(map_name)
                 plot_cor(mat=attention_map, names=names, save_fig_name=map_name)
+
+        def print_big_correlation_labels(attention_map):
+            threshood=(np.max(attention_map)+np.min(attention_map))/2.0
+            related_list=[]
+            for col_idx in range(attention_map.shape[0]):
+                if (np.mean(attention_map[:,col_idx])>threshood):
+                    related_list.append(col_idx)
+            return related_list
+
+        def from_idx_list_to_name_list(idx_list):
+            name_list=[]
+            for idx in range(len(idx_list)):
+                name_list.append(self.names[idx_list[idx]])
+            return name_list
+
+        # print attention heatmap labels
+        if (self.print_attention_correlation_labels== True):
+            for map_idx in range(attention_value.shape[0]):
+                attention_map = attention_value[map_idx, :, :]
+                # map_name = self.pkl_file_dir + 'attention_map_' + str(map_idx) + '.jpg'
+                print(map_idx)
+                related_list=print_big_correlation_labels(attention_map=attention_map)
+                print(related_list)
+                name_list=from_idx_list_to_name_list(idx_list=related_list)
+                print(name_list)
+
 
         # save features fig of given feature
         def each_category_pca_features(img_idx,feature_value):

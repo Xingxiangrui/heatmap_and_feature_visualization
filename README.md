@@ -1,12 +1,10 @@
 # heatmap_and_feature_visualization
 visualize heatmap and model features
 
-
+热图可视化，与feature的降维可视化：
 https://blog.csdn.net/weixin_36474809/article/details/90370876
 
 背景：运行模型时，经常需要将相应的数据可视化。
-
-博主代码地址：https://github.com/Xingxiangrui/heatmap_and_feature_visualization
 
 目录
 

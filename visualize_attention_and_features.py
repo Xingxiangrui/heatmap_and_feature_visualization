@@ -81,8 +81,8 @@ class visualize_attention():
     def __init__(self):
         # super(self).__init__()
         # loaded features are numpy format,names is list
-        # self.pkl_file_dir='/Users/baidu/Desktop/code/chun_ML_GCN/attention_analyse/'
-        self.pkl_file_dir = '/Users/baidu/Desktop/code/chun_ML_GCN/attention_analyse/weight_decay_cls_gat/'
+        # self.pkl_file_dir='/Users/Desktop/code/chun_ML_GCN/attention_analyse/'
+        self.pkl_file_dir = '/Users/Desktop/code/chun_ML_GCN/attention_analyse/weight_decay_cls_gat/'
         self.attention_path=self.pkl_file_dir+'batch_attentions.pkl'
         self.names_files=self.pkl_file_dir+'coco_names.pkl'
         self.resout_feature_path = self.pkl_file_dir + 'resnet_out_feature.pkl'

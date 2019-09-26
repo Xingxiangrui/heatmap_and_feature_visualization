@@ -18,8 +18,8 @@ from sklearn import metrics
 class adj_matrix_gen():
 
     def __init__(self):
-        self.load_dir='/Users/baidu/Desktop/code/ML_GAT-master/'
-        self.save_dir='/Users/baidu/Desktop/code/ML_GAT-master/'
+        self.load_dir='/Users/Desktop/code/ML_GAT-master/'
+        self.save_dir='/Users/Desktop/code/ML_GAT-master/'
         self.load_corelation_filename='coco_correlations.pkl'
         self.load_names_filename='coco_names.pkl'
         self.save_filename='coco_normalized_adj.pkl'
